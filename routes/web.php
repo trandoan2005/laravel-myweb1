@@ -28,3 +28,8 @@ Route::resource('admin/brand', BrandController::class);
 Route::resource('admin/product', ProductController::class);
 Route::resource('admin/user', UserController::class);
 Route::resource('admin/post', PostController::class);
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->name('admin.home');
+Route::get('/test1', [ProductController::class, 'test1']);
+Route::get('/test2', [ProductController::class, 'test2']);
