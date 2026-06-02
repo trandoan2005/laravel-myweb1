@@ -24,7 +24,6 @@
         <thead class="table-dark">
             <tr>
                 <th>STT</th>
-                <th>Ảnh</th>
                 <th>Họ tên</th>
                 <th>Username</th>
                 <th>Email</th>
@@ -36,11 +35,6 @@
             @foreach($list as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td style="width: 80px;">
-                    <img src="https://via.placeholder.com/60x60?text=User" 
-                         alt="{{ $item->fullname }}" 
-                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
-                </td>
                 <td>{{ $item->fullname }}</td>
                 <td>{{ $item->username }}</td>
                 <td>{{ $item->email }}</td>

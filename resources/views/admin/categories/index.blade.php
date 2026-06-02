@@ -24,7 +24,7 @@
         <thead class="table-dark">
             <tr>
                 <th>STT</th>
-                <th>Ảnh</th>
+                <th>Mã loại</th>
                 <th>Tên loại</th>
                 <th>Slug</th>
                 <th>Trạng thái</th>
@@ -35,12 +35,7 @@
             @foreach($list as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td style="width: 80px;">
-                    <img src="{{ $item->image ?? 'https://via.placeholder.com/60x60?text=default' }}" 
-                         alt="{{ $item->catename }}" 
-                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;"
-                         onerror="this.src='https://via.placeholder.com/60x60?text=default'">
-                </td>
+                <td>{{ $item->cateid }}</td>
                 <td>{{ $item->catename }}</td>
                 <td>{{ $item->slug }}</td>
                 <td>
