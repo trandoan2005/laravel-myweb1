@@ -10,26 +10,29 @@
                 Dashboard
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-white" href="/admin/dashboard">
-                <i class="bi bi-house-door"></i>
-                Dashboard***
-            </a>
-        </li>
         {{-- Menu expand --}}
         <li class="nav-item">
             <a class="nav-link text-white" data-bs-toggle="collapse" href="#categoryMenu">
                 <i class="bi bi-tags"></i>
-                Quản lý danh mục
+                Quản lý
                 <i class="bi bi-chevron-down float-end"></i>
             </a>
             <div class="collapse" id="categoryMenu">
                 <ul class="nav flex-column ms-3">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">Danh sách loại sản phẩm</a>
+                        <a class="nav-link text-white" href="{{ route('admin.categories.index') }}">
+                            Loại Sản Phẩm
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">Thêm loại sản phẩm</a>
+                        <a class="nav-link text-white" href="{{ route('admin.brands.index') }}">
+                            Thương hiệu
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('admin.users.index') }}">
+                            Người dùng
+                        </a>
                     </li>
                 </ul>
             </div>

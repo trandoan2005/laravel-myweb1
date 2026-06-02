@@ -4,32 +4,45 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        return "Danh sách category";
+        $list = DB::table('categories')
+            ->select('cateid', 'catename', 'slug', 'image', 'status')
+            ->orderBy('catename')
+            ->get();
+
+        return view('admin.categories.index', compact('list'));
     }
 
     public function create()
     {
-        return "Form thêm category";
+        return view('admin.categories.create');
     }
 
     public function store(Request $request)
     {
-        //
+        DB::table('categories')->insert([
+            'catename' => $request->catename,
+            'slug' => $request->slug,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return redirect()->route('admin.categories.index');
     }
 
     public function show($id)
     {
-        return "Chi tiết category: " . $id;
+        //
     }
 
     public function edit($id)
     {
-        return "Form sửa category: " . $id;
+        //
     }
 
     public function update(Request $request, $id)
@@ -39,6 +52,7 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
-        //
+        DB::table('categories')->where('cateid', $id)->delete();
+        return redirect()->route('admin.categories.index');
     }
 }
