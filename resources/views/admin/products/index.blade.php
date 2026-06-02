@@ -1,19 +1,19 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Thương Hiệu')
+@section('title', 'Sản Phẩm')
 
 @section('content')
-    <h2 class="mb-3">DANH SÁCH THƯƠNG HIỆU</h2>
+    <h2 class="mb-3">DANH SÁCH SẢN PHẨM</h2>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="{{ route('admin.brands.create') }}" class="btn btn-success">+ Thêm mới</a>
+        <a href="{{ route('admin.products.create') }}" class="btn btn-success">+ Thêm mới</a>
 
         <div class="btn-group">
-            <a href="{{ route('admin.brands.index', ['status' => 1]) }}"
+            <a href="{{ route('admin.products.index', ['status' => 1]) }}"
                class="btn btn-outline-success {{ $status === '1' ? 'active' : '' }}">
                 Hiển thị
             </a>
-            <a href="{{ route('admin.brands.index', ['status' => 0]) }}"
+            <a href="{{ route('admin.products.index', ['status' => 0]) }}"
                class="btn btn-outline-danger {{ $status === '0' ? 'active' : '' }}">
                 Ẩn
             </a>
@@ -24,8 +24,10 @@
         <thead class="table-dark">
             <tr>
                 <th>STT</th>
-                <th>Tên thương hiệu</th>
-                <th>Slug</th>
+                <th>Tên sản phẩm</th>
+                <th>Loại</th>
+                <th>Thương hiệu</th>
+                <th>Giá</th>
                 <th>Trạng thái</th>
                 <th>Chức năng</th>
             </tr>
@@ -34,8 +36,10 @@
             @foreach($list as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ $item->brandname }}</td>
-                <td>{{ $item->slug }}</td>
+                <td>{{ $item->productname }}</td>
+                <td>{{ $item->catename }}</td>
+                <td>{{ $item->brandname ?? 'N/A' }}</td>
+                <td>{{ number_format($item->price, 0, ',', '.') }}đ</td>
                 <td>
                     @if($item->status == 1)
                         <span class="badge bg-success">Hiển thị</span>
@@ -44,7 +48,7 @@
                     @endif
                 </td>
                 <td>
-                    <form action="{{ route('admin.brands.destroy', $item->id) }}" method="POST">
+                    <form action="{{ route('admin.products.destroy', $item->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">Xóa</button>

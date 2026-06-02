@@ -1,19 +1,19 @@
 @extends('admin.layouts.admin')
 
-@section('title', 'Thương Hiệu')
+@section('title', 'Bài Viết')
 
 @section('content')
-    <h2 class="mb-3">DANH SÁCH THƯƠNG HIỆU</h2>
+    <h2 class="mb-3">DANH SÁCH BÀI VIẾT</h2>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="{{ route('admin.brands.create') }}" class="btn btn-success">+ Thêm mới</a>
+        <a href="{{ route('admin.posts.create') }}" class="btn btn-success">+ Thêm mới</a>
 
         <div class="btn-group">
-            <a href="{{ route('admin.brands.index', ['status' => 1]) }}"
+            <a href="{{ route('admin.posts.index', ['status' => 1]) }}"
                class="btn btn-outline-success {{ $status === '1' ? 'active' : '' }}">
                 Hiển thị
             </a>
-            <a href="{{ route('admin.brands.index', ['status' => 0]) }}"
+            <a href="{{ route('admin.posts.index', ['status' => 0]) }}"
                class="btn btn-outline-danger {{ $status === '0' ? 'active' : '' }}">
                 Ẩn
             </a>
@@ -24,8 +24,9 @@
         <thead class="table-dark">
             <tr>
                 <th>STT</th>
-                <th>Tên thương hiệu</th>
-                <th>Slug</th>
+                <th>Tiêu đề</th>
+                <th>Tác giả</th>
+                <th>Ngày tạo</th>
                 <th>Trạng thái</th>
                 <th>Chức năng</th>
             </tr>
@@ -34,8 +35,9 @@
             @foreach($list as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ $item->brandname }}</td>
-                <td>{{ $item->slug }}</td>
+                <td>{{ $item->title }}</td>
+                <td>{{ $item->fullname }}</td>
+                <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
                 <td>
                     @if($item->status == 1)
                         <span class="badge bg-success">Hiển thị</span>
@@ -44,7 +46,7 @@
                     @endif
                 </td>
                 <td>
-                    <form action="{{ route('admin.brands.destroy', $item->id) }}" method="POST">
+                    <form action="{{ route('admin.posts.destroy', $item->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">Xóa</button>

@@ -8,14 +8,17 @@ use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $status = $request->query('status', '1');
+
         $list = DB::table('categories')
             ->select('cateid', 'catename', 'slug', 'image', 'status')
+            ->where('status', $status)
             ->orderBy('catename')
             ->get();
 
-        return view('admin.categories.index', compact('list'));
+        return view('admin.categories.index', compact('list', 'status'));
     }
 
     public function create()

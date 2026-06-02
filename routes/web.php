@@ -23,6 +23,10 @@ Route::get('/demo4/{id}', [DemoController::class, 'index4']);
 Route::get('/demo5/{id?}', [DemoController::class, 'index5']);
 Route::get('/demo6/{param1}/{param2}', [DemoController::class, 'index6']);
 
+Route::get('/admin', function () {
+    return redirect()->route('admin.home');
+});
+
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 })->name('admin.home');

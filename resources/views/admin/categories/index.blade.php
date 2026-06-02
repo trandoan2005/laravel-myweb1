@@ -5,9 +5,20 @@
 @section('content')
     <h2 class="mb-3">DANH SÁCH LOẠI SẢN PHẨM</h2>
 
-    <a href="{{ route('admin.categories.create') }}" class="btn btn-success mb-3">
-        + Thêm mới
-    </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="{{ route('admin.categories.create') }}" class="btn btn-success">+ Thêm mới</a>
+
+        <div class="btn-group">
+            <a href="{{ route('admin.categories.index', ['status' => 1]) }}"
+               class="btn btn-outline-success {{ $status === '1' ? 'active' : '' }}">
+                Hiển thị
+            </a>
+            <a href="{{ route('admin.categories.index', ['status' => 0]) }}"
+               class="btn btn-outline-danger {{ $status === '0' ? 'active' : '' }}">
+                Ẩn
+            </a>
+        </div>
+    </div>
 
     <table class="table table-bordered table-hover table-striped">
         <thead class="table-dark">
