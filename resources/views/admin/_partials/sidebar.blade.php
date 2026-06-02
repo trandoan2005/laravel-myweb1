@@ -38,12 +38,6 @@
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="{{ route('admin.products.index') }}">
-                <i class="bi bi-box-seam"></i>
-                Sản phẩm
-            </a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link text-white" href="{{ route('admin.posts.index') }}">
                 <i class="bi bi-file-text"></i>
                 Bài viết
