@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -12,11 +12,10 @@ class UserController extends Controller
     {
         $status = $request->query('status', '1');
 
-        $list = DB::table('users')
-            ->select('id', 'fullname', 'username', 'email', 'status')
+        $list = User::select('id', 'fullname', 'username', 'email', 'status')
             ->where('status', $status)
             ->orderBy('fullname')
-            ->get();
+            ->paginate(10);
 
         return view('admin.users.index', compact('list', 'status'));
     }
@@ -28,33 +27,57 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        DB::table('users')->insert([
+        User::create([
             'fullname' => $request->fullname,
             'username' => $request->username,
-            'email' => $request->email,
+            'email'    => $request->email,
             'password' => bcrypt($request->password),
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'gender' => $request->gender,
+            'phone'    => $request->phone,
+            'address'  => $request->address,
+            'gender'   => $request->gender,
             'birthday' => $request->birthday,
-            'role' => $request->role ?? 0,
-            'status' => 1,
-            'created_at' => now(),
-            'updated_at' => now()
+            'role'     => $request->role ?? 0,
+            'status'   => 1,
         ]);
 
         return redirect()->route('admin.users.index');
     }
 
-    public function show(string $id) {}
+    public function edit(string $id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
 
-    public function edit(string $id) {}
+    public function update(Request $request, string $id)
+    {
+        $user = User::findOrFail($id);
 
-    public function update(Request $request, string $id) {}
+        $data = [
+            'fullname' => $request->fullname,
+            'username' => $request->username,
+            'email'    => $request->email,
+            'phone'    => $request->phone,
+            'address'  => $request->address,
+            'gender'   => $request->gender,
+            'birthday' => $request->birthday,
+            'status'   => $request->status ?? $user->status,
+        ];
+
+        // Chỉ đổi password nếu có nhập
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.users.index');
+    }
 
     public function destroy(string $id)
     {
-        DB::table('users')->where('id', $id)->delete();
+        $user = User::findOrFail($id);
+        $user->delete();
         return redirect()->route('admin.users.index');
     }
 }

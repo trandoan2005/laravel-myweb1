@@ -5,15 +5,19 @@
 @section('content')
     <h2 class="mb-3">THÊM LOẠI SẢN PHẨM</h2>
 
-    <form action="{{ route('admin.categories.store') }}" method="POST">
+    <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label>Tên loại sản phẩm</label>
-            <input type="text" name="catename" class="form-control">
+            <input type="text" name="catename" class="form-control" required>
         </div>
         <div class="mb-3">
             <label>Slug</label>
-            <input type="text" name="slug" class="form-control">
+            <input type="text" name="slug" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Ảnh danh mục</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
         </div>
         <button type="submit" class="btn btn-primary">Lưu</button>
         <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Quay lại</a>

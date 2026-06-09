@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
@@ -12,11 +12,10 @@ class CategoryController extends Controller
     {
         $status = $request->query('status', '1');
 
-        $list = DB::table('categories')
-            ->select('cateid', 'catename', 'slug', 'image', 'status')
+        $list = Category::select('cateid', 'catename', 'slug', 'image', 'status')
             ->where('status', $status)
             ->orderBy('catename')
-            ->get();
+            ->paginate(10);
 
         return view('admin.categories.index', compact('list', 'status'));
     }
@@ -28,34 +27,66 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        DB::table('categories')->insert([
-            'catename' => $request->catename,
-            'slug' => $request->slug,
-            'created_at' => now(),
-            'updated_at' => now()
+        $imageName = null;
+
+        if ($request->hasFile('image')) {
+            $file      = $request->file('image');
+            $imageName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/categories'), $imageName);
+        }
+
+        Category::create([
+            'catename'   => $request->catename,
+            'slug'       => $request->slug,
+            'image'      => $imageName,
+            'status'     => $request->status ?? 1,
+            'sort_order' => $request->sort_order ?? 0,
         ]);
 
         return redirect()->route('admin.categories.index');
     }
 
-    public function show($id)
-    {
-        //
-    }
-
     public function edit($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        return view('admin.categories.edit', compact('category'));
     }
 
     public function update(Request $request, $id)
     {
-        //
+        $category  = Category::findOrFail($id);
+        $imageName = $category->image;
+
+        if ($request->hasFile('image')) {
+            if ($imageName && file_exists(public_path('uploads/categories/' . $imageName))) {
+                unlink(public_path('uploads/categories/' . $imageName));
+            }
+
+            $file      = $request->file('image');
+            $imageName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/categories'), $imageName);
+        }
+
+        $category->update([
+            'catename'   => $request->catename,
+            'slug'       => $request->slug,
+            'image'      => $imageName,
+            'status'     => $request->status ?? 1,
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        return redirect()->route('admin.categories.index');
     }
 
     public function destroy($id)
     {
-        DB::table('categories')->where('cateid', $id)->delete();
+        $category = Category::findOrFail($id);
+
+        if ($category->image && file_exists(public_path('uploads/categories/' . $category->image))) {
+            unlink(public_path('uploads/categories/' . $category->image));
+        }
+
+        $category->delete();
         return redirect()->route('admin.categories.index');
     }
 }

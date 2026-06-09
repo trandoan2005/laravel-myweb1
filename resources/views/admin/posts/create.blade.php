@@ -5,7 +5,7 @@
 @section('content')
     <h2 class="mb-3">THÊM BÀI VIẾT</h2>
 
-    <form action="{{ route('admin.posts.store') }}" method="POST">
+    <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label>Tiêu đề</label>
@@ -27,6 +27,10 @@
         <div class="mb-3">
             <label>Nội dung</label>
             <textarea name="content" class="form-control" rows="6"></textarea>
+        </div>
+        <div class="mb-3">
+            <label>Ảnh bài viết</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
         </div>
         <button type="submit" class="btn btn-primary">Lưu</button>
         <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Quay lại</a>

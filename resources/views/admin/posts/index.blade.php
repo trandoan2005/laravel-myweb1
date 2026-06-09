@@ -5,6 +5,13 @@
 @section('content')
     <h2 class="mb-3">DANH SÁCH BÀI VIẾT</h2>
 
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="{{ route('admin.posts.create') }}" class="btn btn-success">+ Thêm mới</a>
 
@@ -32,11 +39,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($list as $index => $item)
+            @forelse($list as $index => $item)
             <tr>
-                <td>{{ $index + 1 }}</td>
+                {{-- Tính toán số thứ tự chính xác khi qua các trang khác nhau --}}
+                <td>{{ ($list->currentPage() - 1) * $list->perPage() + $index + 1 }}</td>
                 <td>{{ $item->title }}</td>
-                <td>{{ $item->fullname }}</td>
+                
+                {{-- SỬA LỖI: Lấy fullname từ mối quan hệ user (with user) --}}
+                <td>{{ $item->user->fullname ?? 'Không xác định' }}</td>
+                
                 <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
                 <td>
                     @if($item->status == 1)
@@ -46,14 +57,23 @@
                     @endif
                 </td>
                 <td>
-                    <form action="{{ route('admin.posts.destroy', $item->id) }}" method="POST">
+                    <form action="{{ route('admin.posts.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                     </form>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="6" class="text-center">Không có bài viết nào.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
+
+    {{-- THÊM PHÂN TRANG: Hiển thị thanh chuyển trang và giữ lại bộ lọc status hiện tại --}}
+    <div class="d-flex justify-content-center mt-3">
+        {{ $list->appends(request()->query())->links() }}
+    </div>
 @endsection

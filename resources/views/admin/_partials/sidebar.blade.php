@@ -34,6 +34,11 @@
                             Người dùng
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('admin.products.index') }}">
+                            Sản Phẩm
+                        </a>
+                    </li>
                 </ul>
             </div>
         </li>

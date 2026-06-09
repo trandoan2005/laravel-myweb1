@@ -8,6 +8,8 @@ class Product extends Model
 {
     protected $table = 'products';
 
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'productname',
         'slug',
@@ -23,17 +25,13 @@ class Product extends Model
         'detail',
     ];
 
-    /**
-     * Quan hệ với Category (nhiều sản phẩm thuộc 1 danh mục)
-     */
+    // Quan hệ với Category
     public function category()
     {
         return $this->belongsTo(Category::class, 'cateid', 'cateid');
     }
 
-    /**
-     * Quan hệ với Brand (nhiều sản phẩm thuộc 1 thương hiệu)
-     */
+    // Quan hệ với Brand
     public function brand()
     {
         return $this->belongsTo(Brand::class, 'brand_id', 'id');

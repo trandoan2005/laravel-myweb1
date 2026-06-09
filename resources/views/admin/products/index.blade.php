@@ -24,6 +24,7 @@
         <thead class="table-dark">
             <tr>
                 <th>STT</th>
+                <th>Ảnh</th>
                 <th>Tên sản phẩm</th>
                 <th>Loại</th>
                 <th>Thương hiệu</th>
@@ -33,12 +34,21 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($list as $index => $item)
+            @forelse($list as $index => $item)
             <tr>
-                <td>{{ $index + 1 }}</td>
+                <td>{{ $list->firstItem() + $index }}</td>
+                <td>
+                    @if($item->image)
+                        <img src="{{ asset('uploads/products/' . $item->image) }}"
+                             alt="{{ $item->productname }}"
+                             style="width: 60px; height: 60px; object-fit: cover;">
+                    @else
+                        <span class="text-muted">Chưa có</span>
+                    @endif
+                </td>
                 <td>{{ $item->productname }}</td>
-                <td>{{ $item->catename }}</td>
-                <td>{{ $item->brandname ?? 'N/A' }}</td>
+                <td>{{ $item->category?->catename }}</td>
+                <td>{{ $item->brand?->brandname ?? 'N/A' }}</td>
                 <td>{{ number_format($item->price, 0, ',', '.') }}đ</td>
                 <td>
                     @if($item->status == 1)
@@ -48,14 +58,27 @@
                     @endif
                 </td>
                 <td>
+                    <a href="{{ route('admin.products.edit', $item->id) }}"
+                       class="btn btn-warning btn-sm mb-1">Sửa</a>
+
                     <form action="{{ route('admin.products.destroy', $item->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Xác nhận xóa sản phẩm này?')">Xóa</button>
                     </form>
                 </td>
             </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="8" class="text-center">Không có dữ liệu</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
+
+    {{-- Phân trang --}}
+    <div class="d-flex justify-content-center">
+        {{ $list->appends(['status' => $status])->links() }}
+    </div>
 @endsection

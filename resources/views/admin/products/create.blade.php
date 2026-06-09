@@ -5,7 +5,7 @@
 @section('content')
     <h2 class="mb-3">THÊM SẢN PHẨM</h2>
 
-    <form action="{{ route('admin.products.store') }}" method="POST">
+    <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label>Tên sản phẩm</label>
@@ -40,6 +40,10 @@
         <div class="mb-3">
             <label>Số lượng</label>
             <input type="number" name="quantity" class="form-control" value="0" min="0">
+        </div>
+        <div class="mb-3">
+            <label>Ảnh sản phẩm</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
         </div>
         <button type="submit" class="btn btn-primary">Lưu</button>
         <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>

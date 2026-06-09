@@ -43,6 +43,13 @@
             <label>Ngày sinh</label>
             <input type="date" name="birthday" class="form-control">
         </div>
+        <div class="mb-3">
+            <label>Vai trò</label>
+            <select name="role" class="form-control">
+                <option value="0">Khách hàng</option>
+                <option value="1">Admin</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary">Lưu</button>
         <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Quay lại</a>
     </form>

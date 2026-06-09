@@ -24,6 +24,7 @@
         <thead class="table-dark">
             <tr>
                 <th>STT</th>
+                <th>Logo</th>
                 <th>Tên thương hiệu</th>
                 <th>Slug</th>
                 <th>Trạng thái</th>
@@ -31,9 +32,18 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($list as $index => $item)
+            @forelse($list as $index => $item)
             <tr>
-                <td>{{ $index + 1 }}</td>
+                <td>{{ $list->firstItem() + $index }}</td>
+                <td>
+                    @if($item->image)
+                        <img src="{{ asset('uploads/brands/' . $item->image) }}"
+                             alt="{{ $item->brandname }}"
+                             style="width: 60px; height: 60px; object-fit: cover;">
+                    @else
+                        <span class="text-muted">Chưa có</span>
+                    @endif
+                </td>
                 <td>{{ $item->brandname }}</td>
                 <td>{{ $item->slug }}</td>
                 <td>
@@ -44,14 +54,27 @@
                     @endif
                 </td>
                 <td>
+                    <a href="{{ route('admin.brands.edit', $item->id) }}"
+                       class="btn btn-warning btn-sm mb-1">Sửa</a>
+
                     <form action="{{ route('admin.brands.destroy', $item->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Xác nhận xóa thương hiệu này?')">Xóa</button>
                     </form>
                 </td>
             </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center">Không có dữ liệu</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
+
+    {{-- Phân trang --}}
+    <div class="d-flex justify-content-center">
+        {{ $list->appends(['status' => $status])->links() }}
+    </div>
 @endsection
