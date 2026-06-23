@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 
+use App\Http\Requests\Admin\ProductRequest;
+
 class ProductController extends Controller
 {
     public function index(Request $request)
@@ -28,70 +30,120 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::where('status', 1)->get();
-        $brands     = Brand::where('status', 1)->get();
+        $categories = Category::select('cateid', 'catename')
+            ->where('status', 1)
+            ->orderBy('catename')
+            ->get();
+
+        $brands = Brand::select('id', 'brandname')
+            ->where('status', 1)
+            ->orderBy('brandname')
+            ->get();
+
         return view('admin.products.create', compact('categories', 'brands'));
     }
 
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $imageName = null;
+        try {
+            $imageName = null;
 
-        if ($request->hasFile('image')) {
-            $file      = $request->file('image');
-            $imageName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/products'), $imageName);
+            if ($request->hasFile('image')) {
+                $file      = $request->file('image');
+                $imageName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/products'), $imageName);
+            }
+
+            Product::create([
+                'productname' => $request->productname,
+                'slug'        => $request->slug,
+                'cateid'      => $request->cateid,
+                'brand_id'    => $request->brand_id,
+                'price'       => $request->price,
+                'price_sale'  => $request->price_sale ?? $request->pricediscount ?? 0,
+                'quantity'    => $request->quantity ?? 0,
+                'image'       => $imageName,
+                'status'      => $request->status ?? 1,
+                'description' => $request->description ?? '',
+            ]);
+
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Thêm sản phẩm thành công');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
         }
-
-        Product::create([
-            'productname' => $request->productname,
-            'slug'        => $request->slug,
-            'cateid'      => $request->cateid,
-            'brand_id'    => $request->brand_id,
-            'price'       => $request->price,
-            'quantity'    => $request->quantity ?? 0,
-            'image'       => $imageName,
-            'status'      => 1,
-        ]);
-
-        return redirect()->route('admin.products.index');
     }
 
     public function edit(string $id)
     {
-        $product    = Product::findOrFail($id);
-        $categories = Category::where('status', 1)->get();
-        $brands     = Brand::where('status', 1)->get();
+        $product = Product::find($id);
+
+        if (!$product) {
+            return redirect()->route('admin.products.index')
+                ->with('error', 'Sản phẩm không tồn tại');
+        }
+
+        $categories = Category::select('cateid', 'catename')
+            ->where('status', 1)
+            ->orderBy('catename')
+            ->get();
+
+        $brands = Brand::select('id', 'brandname')
+            ->where('status', 1)
+            ->orderBy('brandname')
+            ->get();
 
         return view('admin.products.edit', compact('product', 'categories', 'brands'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(ProductRequest $request, string $id)
     {
-        $product   = Product::findOrFail($id);
-        $imageName = $product->image;
-
-        if ($request->hasFile('image')) {
-            if ($imageName && file_exists(public_path('uploads/products/' . $imageName))) {
-                unlink(public_path('uploads/products/' . $imageName));
+        try {
+            if (empty($request->cateid)) {
+                return back()->withInput()->with('error', 'Vui lòng chọn loại sản phẩm');
             }
 
-            $file      = $request->file('image');
-            $imageName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/products'), $imageName);
+            $product = Product::find($id);
+
+            if (!$product) {
+                return redirect()->route('admin.products.index')
+                    ->with('error', 'Sản phẩm không tồn tại');
+            }
+
+            $imageName = $product->image;
+
+            if ($request->hasFile('image')) {
+                if ($imageName && file_exists(public_path('uploads/products/' . $imageName))) {
+                    unlink(public_path('uploads/products/' . $imageName));
+                }
+
+                $file      = $request->file('image');
+                $imageName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/products'), $imageName);
+            }
+
+            $product->update([
+                'productname' => $request->productname,
+                'slug'        => $request->slug,
+                'cateid'      => $request->cateid,
+                'brand_id'    => $request->brand_id,
+                'price'       => $request->price,
+                'price_sale'  => $request->price_sale ?? $request->pricediscount ?? 0,
+                'quantity'    => $request->quantity ?? 0,
+                'image'       => $imageName,
+                'status'      => $request->status ?? $product->status,
+                'description' => $request->description ?? '',
+            ]);
+
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Cập nhật sản phẩm thành công');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
         }
-
-        $product->update([
-            'productname' => $request->productname,
-            'slug'        => $request->slug,
-            'cateid'      => $request->cateid,
-            'brand_id'    => $request->brand_id,
-            'price'       => $request->price,
-            'quantity'    => $request->quantity ?? 0,
-            'image'       => $imageName,
-        ]);
-
-        return redirect()->route('admin.products.index');
     }
 
     public function destroy(string $id)

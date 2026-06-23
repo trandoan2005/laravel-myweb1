@@ -5,6 +5,8 @@
 @section('content')
     <h2 class="mb-3">DANH SÁCH LOẠI SẢN PHẨM</h2>
 
+    <x-admin.alert />
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="{{ route('admin.categories.create') }}" class="btn btn-success">+ Thêm mới</a>
 

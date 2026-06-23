@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
 
+use App\Http\Requests\Admin\PostRequest;
+
 class PostController extends Controller
 {
     public function index(Request $request)
@@ -24,64 +26,86 @@ class PostController extends Controller
 
     public function create()
     {
-        $users = User::where('status', 1)->get();
+        $users = User::select('id', 'fullname')
+            ->where('status', 1)
+            ->orderBy('fullname')
+            ->get();
+
         return view('admin.posts.create', compact('users'));
     }
 
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $imageName = null;
+        try {
+            $imageName = null;
 
-        if ($request->hasFile('image')) {
-            $file      = $request->file('image');
-            $imageName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/posts'), $imageName);
+            if ($request->hasFile('image')) {
+                $file      = $request->file('image');
+                $imageName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/posts'), $imageName);
+            }
+
+            Post::create([
+                'title'   => $request->title,
+                'slug'    => $request->slug,
+                'user_id' => $request->user_id,
+                'content' => $request->content ?? '',
+                'image'   => $imageName,
+                'status'  => $request->status ?? 1,
+            ]);
+
+            return redirect()->route('admin.posts.index')
+                ->with('success', 'Thêm bài viết thành công');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
         }
-
-        Post::create([
-            'title'   => $request->title,
-            'slug'    => $request->slug,
-            'user_id' => $request->user_id,
-            'content' => $request->content ?? '',
-            'image'   => $imageName,
-            'status'  => 1,
-        ]);
-
-        return redirect()->route('admin.posts.index');
     }
 
     public function edit(string $id)
     {
         $post  = Post::findOrFail($id);
-        $users = User::where('status', 1)->get();
+        $users = User::select('id', 'fullname')
+            ->where('status', 1)
+            ->orderBy('fullname')
+            ->get();
+
         return view('admin.posts.edit', compact('post', 'users'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(PostRequest $request, string $id)
     {
-        $post      = Post::findOrFail($id);
-        $imageName = $post->image;
+        try {
+            $post      = Post::findOrFail($id);
+            $imageName = $post->image;
 
-        if ($request->hasFile('image')) {
-            if ($imageName && file_exists(public_path('uploads/posts/' . $imageName))) {
-                unlink(public_path('uploads/posts/' . $imageName));
+            if ($request->hasFile('image')) {
+                if ($imageName && file_exists(public_path('uploads/posts/' . $imageName))) {
+                    unlink(public_path('uploads/posts/' . $imageName));
+                }
+
+                $file      = $request->file('image');
+                $imageName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/posts'), $imageName);
             }
 
-            $file      = $request->file('image');
-            $imageName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/posts'), $imageName);
+            $post->update([
+                'title'   => $request->title,
+                'slug'    => $request->slug,
+                'user_id' => $request->user_id,
+                'content' => $request->content ?? '',
+                'image'   => $imageName,
+                'status'  => $request->status ?? $post->status,
+            ]);
+
+            return redirect()->route('admin.posts.index')
+                ->with('success', 'Cập nhật bài viết thành công');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
         }
-
-        $post->update([
-            'title'   => $request->title,
-            'slug'    => $request->slug,
-            'user_id' => $request->user_id,
-            'content' => $request->content ?? '',
-            'image'   => $imageName,
-            'status'  => $request->status ?? $post->status,
-        ]);
-
-        return redirect()->route('admin.posts.index');
     }
 
     public function destroy(string $id)

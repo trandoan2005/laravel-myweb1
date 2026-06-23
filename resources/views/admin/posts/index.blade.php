@@ -5,12 +5,7 @@
 @section('content')
     <h2 class="mb-3">DANH SÁCH BÀI VIẾT</h2>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+    <x-admin.alert />
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="{{ route('admin.posts.create') }}" class="btn btn-success">+ Thêm mới</a>
@@ -57,6 +52,9 @@
                     @endif
                 </td>
                 <td>
+                    <a href="{{ route('admin.posts.edit', $item->id) }}"
+                       class="btn btn-warning btn-sm mb-1">Sửa</a>
+
                     <form action="{{ route('admin.posts.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
                         @csrf
                         @method('DELETE')

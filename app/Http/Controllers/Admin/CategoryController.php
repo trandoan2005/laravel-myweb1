@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Http\Requests\Admin\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -25,25 +26,30 @@ class CategoryController extends Controller
         return view('admin.categories.create');
     }
 
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $imageName = null;
+        try {
+            $imageName = null;
 
-        if ($request->hasFile('image')) {
-            $file      = $request->file('image');
-            $imageName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/categories'), $imageName);
+            if ($request->hasFile('image')) {
+                $file      = $request->file('image');
+                $imageName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/categories'), $imageName);
+            }
+
+            Category::create([
+                'catename'   => $request->catename,
+                'slug'       => $request->slug,
+                'image'      => $imageName,
+                'status'     => $request->status ?? 1,
+                'sort_order' => $request->sort_order ?? 0,
+            ]);
+
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Thêm loại sản phẩm thành công');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
         }
-
-        Category::create([
-            'catename'   => $request->catename,
-            'slug'       => $request->slug,
-            'image'      => $imageName,
-            'status'     => $request->status ?? 1,
-            'sort_order' => $request->sort_order ?? 0,
-        ]);
-
-        return redirect()->route('admin.categories.index');
     }
 
     public function edit($id)
@@ -52,30 +58,35 @@ class CategoryController extends Controller
         return view('admin.categories.edit', compact('category'));
     }
 
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
-        $category  = Category::findOrFail($id);
-        $imageName = $category->image;
+        try {
+            $category  = Category::findOrFail($id);
+            $imageName = $category->image;
 
-        if ($request->hasFile('image')) {
-            if ($imageName && file_exists(public_path('uploads/categories/' . $imageName))) {
-                unlink(public_path('uploads/categories/' . $imageName));
+            if ($request->hasFile('image')) {
+                if ($imageName && file_exists(public_path('uploads/categories/' . $imageName))) {
+                    unlink(public_path('uploads/categories/' . $imageName));
+                }
+
+                $file      = $request->file('image');
+                $imageName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/categories'), $imageName);
             }
 
-            $file      = $request->file('image');
-            $imageName = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/categories'), $imageName);
+            $category->update([
+                'catename'   => $request->catename,
+                'slug'       => $request->slug,
+                'image'      => $imageName,
+                'status'     => $request->status ?? $category->status,
+                'sort_order' => $request->sort_order ?? 0,
+            ]);
+
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Cập nhật loại sản phẩm thành công');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
         }
-
-        $category->update([
-            'catename'   => $request->catename,
-            'slug'       => $request->slug,
-            'image'      => $imageName,
-            'status'     => $request->status ?? 1,
-            'sort_order' => $request->sort_order ?? 0,
-        ]);
-
-        return redirect()->route('admin.categories.index');
     }
 
     public function destroy($id)
