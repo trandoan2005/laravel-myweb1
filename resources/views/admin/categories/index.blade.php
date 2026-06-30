@@ -25,10 +25,9 @@
     <table class="table table-bordered table-hover table-striped">
         <thead class="table-dark">
             <tr>
-                <th>STT</th>
-                <th>Ảnh</th>
-                <th>Mã loại</th>
-                <th>Tên loại</th>
+                <th>Mã</th>
+                <th>Hình ảnh</th>
+                <th>Tên loại sản phẩm</th>
                 <th>Slug</th>
                 <th>Trạng thái</th>
                 <th>Chức năng</th>
@@ -37,17 +36,15 @@
         <tbody>
             @forelse($list as $index => $item)
             <tr>
-                <td>{{ $list->firstItem() + $index }}</td>
+                <td>{{ $item->cateid }}</td>
                 <td>
                     @if($item->image)
-                        <img src="{{ asset('uploads/categories/' . $item->image) }}"
-                             alt="{{ $item->catename }}"
-                             style="width: 60px; height: 60px; object-fit: cover;">
+                        <img src="{{ asset('storage/categories/' . $item->image) }}" width="80"
+                             class="img-thumbnail">
                     @else
                         <span class="text-muted">Chưa có</span>
                     @endif
                 </td>
-                <td>{{ $item->cateid }}</td>
                 <td>{{ $item->catename }}</td>
                 <td>{{ $item->slug }}</td>
                 <td>

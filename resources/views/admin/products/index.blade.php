@@ -22,59 +22,48 @@
         </div>
     </div>
 
-    <table class="table table-bordered table-hover table-striped">
-        <thead class="table-dark">
+    <table class="table table-bordered table-hover">
+        <thead>
             <tr>
                 <th>STT</th>
-                <th>Ảnh</th>
                 <th>Tên sản phẩm</th>
                 <th>Loại</th>
                 <th>Thương hiệu</th>
                 <th>Giá</th>
                 <th>Trạng thái</th>
-                <th>Chức năng</th>
+                <th width="120">Thao tác</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($list as $index => $item)
+            @forelse($list as $item)
             <tr>
-                <td>{{ $list->firstItem() + $index }}</td>
-                <td>
-                    @if($item->image)
-                        <img src="{{ asset('uploads/products/' . $item->image) }}"
-                             alt="{{ $item->productname }}"
-                             style="width: 60px; height: 60px; object-fit: cover;">
-                    @else
-                        <span class="text-muted">Chưa có</span>
-                    @endif
-                </td>
+                <td>{{ $list->firstItem() + $loop->index }}</td>
                 <td>{{ $item->productname }}</td>
                 <td>{{ $item->category?->catename }}</td>
-                <td>{{ $item->brand?->brandname ?? 'N/A' }}</td>
-                <td>{{ number_format($item->price, 0, ',', '.') }}đ</td>
-                <td>
-                    @if($item->status == 1)
-                        <span class="badge bg-success">Hiển thị</span>
+                <td>{{ $item->brand?->brandname }}</td>
+                <td>{{ number_format($item->price) }} đ</td>
+                <td>@if($item->status)
+                    <span class="badge bg-success">Hiện</span>
                     @else
-                        <span class="badge bg-danger">Ẩn</span>
+                    <span class="badge bg-danger">Ẩn</span>
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('admin.products.edit', $item->id) }}"
-                       class="btn btn-warning btn-sm mb-1">Sửa</a>
-
-                    <form action="{{ route('admin.products.destroy', $item->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Xác nhận xóa sản phẩm này?')">Xóa</button>
-                    </form>
+                    <a href="{{ route('admin.products.edit', $item->id) }}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a href="{{ route('admin.products.destroy', $item->id) }}" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Bạn có chắc muốn xóa?')">
+                        <i class="bi bi-trash"></i>
+                    </a>
                 </td>
             </tr>
             @empty
-                <tr>
-                    <td colspan="8" class="text-center">Không có dữ liệu</td>
-                </tr>
+            <tr>
+                <td colspan="8" class="text-center">
+                    Không có dữ liệu
+                </td>
+            </tr>
             @endforelse
         </tbody>
     </table>

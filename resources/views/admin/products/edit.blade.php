@@ -104,17 +104,46 @@
                    value="{{ old('quantity', $product->quantity) }}" min="0">
         </div>
 
-        <div class="mb-3">
-            <label>Ảnh sản phẩm</label><br>
-            @if($product->image)
-                <img src="{{ asset('uploads/products/' . $product->image) }}"
-                     alt="{{ $product->productname }}"
-                     style="width: 100px; height: 100px; object-fit: cover;" class="mb-2">
-                <p class="text-muted small">Chọn ảnh mới để thay thế ảnh hiện tại</p>
-            @else
-                <p class="text-muted small">Chưa có ảnh</p>
-            @endif
-            <input type="file" name="image" class="form-control" accept="image/*">
+        <div class="mb-3 img-group">
+            <label class="form-label">Hình ảnh chính</label>
+            <input type="file" name="img" class="form-control img-input">
+            <div class="img-preview mt-2">
+                @if ($product->image)
+                    <img src="{{ asset('storage/products/' . $product->image) }}"
+                        class="img-thumbnail" width="120">
+                @endif
+            </div>
+            @error('img')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
+        </div>
+
+        <div class="mb-3 img-group">
+            <label class="form-label">Hình ảnh phụ</label>
+            <input type="file" name="imgs[]" class="form-control img-input" multiple>
+            <div class="img-preview mt-2">
+                @foreach ($product->images as $image)
+                    <div class="d-inline-block position-relative sub-image-item" id="sub-img-container-{{ $image->id }}" style="margin-right: 10px; margin-bottom: 10px;">
+                        <img src="{{ asset('storage/products/' . $image->image) }}"
+                            class="img-thumbnail" width="100">
+                        <button type="button"
+                                class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 btn-delete-sub-img"
+                                data-id="{{ $image->id }}"
+                                data-url="{{ route('admin.products.delete-image', $image->id) }}"
+                                style="padding: 2px 6px;"
+                                title="Xóa ảnh này">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                @endforeach
+            </div>
+            @error('imgs')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">Cập nhật sản phẩm</button>

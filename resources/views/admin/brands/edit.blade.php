@@ -43,17 +43,21 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label>Logo thương hiệu</label><br>
-            @if($brand->image)
-                <img src="{{ asset('uploads/brands/' . $brand->image) }}"
-                     alt="{{ $brand->brandname }}"
-                     style="width: 100px; height: 100px; object-fit: cover;" class="mb-2">
-                <p class="text-muted small">Chọn ảnh mới để thay thế logo hiện tại</p>
-            @else
-                <p class="text-muted small">Chưa có logo</p>
-            @endif
-            <input type="file" name="image" class="form-control" accept="image/*">
+        <div class="mb-3 img-group">
+            <label class="form-label">Hình ảnh</label>
+            <input type="file" name="img" class="form-control img-input">
+            <div class="img-preview mt-2">
+                @if($brand->image)
+                    <img src="{{ asset('storage/brands/' . $brand->image) }}"
+                         alt="{{ $brand->brandname }}"
+                         width="150" class="img-thumbnail">
+                @endif
+            </div>
+            @error('img')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">Cập nhật</button>

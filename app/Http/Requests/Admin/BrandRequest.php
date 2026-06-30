@@ -19,25 +19,54 @@ class BrandRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('brand'); // Trả về ID của brand khi cập nhật
+        $id = $this->route('brand') ?? $this->route('id');
 
         return [
-            'brandname' => 'required|min:3|unique:brands,brandname,' . ($id ?? 'NULL') . ',id',
-            'slug'      => 'required|unique:brands,slug,' . ($id ?? 'NULL') . ',id',
+            'brandname' => [
+                'required',
+                'min:3',
+                'max:100',
+                \Illuminate\Validation\Rule::unique('brands', 'brandname')->ignore($id),
+            ],
+            'slug' => [
+                'required',
+                'min:3',
+                'max:150',
+                \Illuminate\Validation\Rule::unique('brands', 'slug')->ignore($id),
+                'regex:/^[a-z0-9-]+$/',
+            ],
+            'img' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:200',
+            ],
+            'status' => 'required|in:0,1',
         ];
     }
 
-    /**
-     * Get the custom messages for validator errors.
-     */
     public function messages(): array
     {
         return [
-            'brandname.required' => 'Vui lòng nhập tên thương hiệu.',
-            'brandname.min'      => 'Tên thương hiệu phải có ít nhất 3 ký tự.',
-            'brandname.unique'   => 'Tên thương hiệu này đã tồn tại.',
-            'slug.required'      => 'Vui lòng nhập slug.',
-            'slug.unique'        => 'Slug này đã tồn tại.',
+            'required' => ':attribute không được để trống.',
+            'min' => ':attribute phải từ :min ký tự trở lên.',
+            'max' => ':attribute không vượt quá :max KB.',
+            'unique' => ':attribute đã tồn tại.',
+            'slug.regex' => ':attribute chỉ được chứa chữ thường, số và dấu gạch ngang (-).',
+            'status.in' => ':attribute không hợp lệ.',
+            'img.image' => ':attribute phải là hình ảnh.',
+            'img.mimes' => ':attribute chỉ chấp nhận các định dạng: jpg, jpeg, png, webp.',
+            'img.max' => ':attribute không được vượt quá 200 KB.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'brandname' => 'Tên thương hiệu',
+            'slug' => 'Slug',
+            'img' => 'Hình ảnh',
+            'status' => 'Trạng thái',
         ];
     }
 }

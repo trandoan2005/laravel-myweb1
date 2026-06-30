@@ -25,25 +25,22 @@
     <table class="table table-bordered table-hover table-striped">
         <thead class="table-dark">
             <tr>
-                <th>STT</th>
-                <th>Logo</th>
+                <th>Mã</th>
+                <th>Hình ảnh</th>
                 <th>Tên thương hiệu</th>
                 <th>Slug</th>
                 <th>Trạng thái</th>
-                <th>Chức năng</th>
+                <td></td>
             </tr>
         </thead>
         <tbody>
             @forelse($list as $index => $item)
             <tr>
-                <td>{{ $list->firstItem() + $index }}</td>
+                <td>{{ $item->id }}</td>
                 <td>
                     @if($item->image)
-                        <img src="{{ asset('uploads/brands/' . $item->image) }}"
-                             alt="{{ $item->brandname }}"
-                             style="width: 60px; height: 60px; object-fit: cover;">
-                    @else
-                        <span class="text-muted">Chưa có</span>
+                        <img src="{{ asset('storage/brands/' . $item->image) }}" width="80"
+                             class="img-thumbnail">
                     @endif
                 </td>
                 <td>{{ $item->brandname }}</td>

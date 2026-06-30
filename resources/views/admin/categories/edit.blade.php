@@ -41,19 +41,26 @@
                        value="0" {{ old('status', $category->status) == '0' ? 'checked' : '' }}>
                 <label class="form-check-label" for="status0">Ẩn</label>
             </div>
+            @error('status')
+                <span class="text-danger d-block mt-1">{{ $message }}</span>
+            @enderror
         </div>
 
-        <div class="mb-3">
-            <label>Ảnh danh mục</label><br>
-            @if($category->image)
-                <img src="{{ asset('uploads/categories/' . $category->image) }}"
-                     alt="{{ $category->catename }}"
-                     style="width: 100px; height: 100px; object-fit: cover;" class="mb-2">
-                <p class="text-muted small">Chọn ảnh mới để thay thế ảnh hiện tại</p>
-            @else
-                <p class="text-muted small">Chưa có ảnh</p>
-            @endif
-            <input type="file" name="image" class="form-control" accept="image/*">
+        <div class="mb-3 img-group">
+            <label class="form-label">Hình ảnh</label>
+            <input type="file" name="img" class="form-control img-input">
+            <div class="img-preview mt-2">
+                @if($category->image)
+                    <img src="{{ asset('storage/categories/' . $category->image) }}"
+                         alt="{{ $category->catename }}"
+                         width="150" class="img-thumbnail">
+                @endif
+            </div>
+            @error('img')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">Cập nhật</button>

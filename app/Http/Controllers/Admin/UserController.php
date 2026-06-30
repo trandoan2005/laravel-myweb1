@@ -10,16 +10,13 @@ use App\Http\Requests\Admin\UserRequest;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index($limit = 10)
     {
-        $status = $request->query('status', '1');
-
         $list = User::select('id', 'fullname', 'username', 'email', 'status')
-            ->where('status', $status)
             ->orderBy('fullname')
-            ->paginate(10);
+            ->paginate($limit);
 
-        return view('admin.users.index', compact('list', 'status'));
+        return view('admin.users.index', compact('list'));
     }
 
     public function create()

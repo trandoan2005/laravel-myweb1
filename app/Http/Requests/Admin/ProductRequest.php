@@ -42,6 +42,14 @@ class ProductRequest extends FormRequest
             'price_sale' => 'nullable|numeric|min:0|lte:price',
             'status' => 'nullable|in:0,1',
             'description' => 'nullable|regex:/^[^@!$^]*$/',
+            'img' => [
+                $this->isMethod('post') ? 'required' : 'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:200',
+            ],
+            'imgs' => 'nullable|array',
+            'imgs.*' => 'image|mimes:jpg,jpeg,png,webp|max:200',
         ];
     }
 
@@ -77,6 +85,16 @@ class ProductRequest extends FormRequest
             'status.in'             => ':attribute không hợp lệ.',
 
             'description.regex'     => ':attribute không được chứa các ký tự đặc biệt như @, !, $, ^.',
+
+            'img.required'          => 'Vui lòng chọn :attribute cho sản phẩm.',
+            'img.image'             => ':attribute phải là hình ảnh.',
+            'img.mimes'             => ':attribute phải có định dạng: jpg, jpeg, png, webp.',
+            'img.max'               => ':attribute không được vượt quá :max KB.',
+
+            'imgs.array'            => ':attribute phải là một danh sách ảnh.',
+            'imgs.*.image'          => 'Ảnh phụ phải là hình ảnh.',
+            'imgs.*.mimes'          => 'Ảnh phụ phải có định dạng: jpg, jpeg, png, webp.',
+            'imgs.*.max'            => 'Ảnh phụ không được vượt quá :max KB.',
         ];
     }
 
@@ -91,6 +109,8 @@ class ProductRequest extends FormRequest
             'price_sale'  => 'Giá khuyến mãi',
             'status'      => 'Trạng thái',
             'description' => 'Mô tả sản phẩm',
+            'img'         => 'Ảnh chính',
+            'imgs'        => 'Ảnh phụ',
         ];
     }
 }

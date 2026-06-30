@@ -15,8 +15,10 @@ class Product extends Model
         'slug',
         'cateid',
         'brand_id',
+        'brandid',
         'price',
         'price_sale',
+        'pricediscount',
         'image',
         'quantity',
         'status',
@@ -31,9 +33,16 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'cateid', 'cateid');
     }
 
-    // Quan hệ với Brand
+    // Cấu hình Quan hệ với Brand
     public function brand()
     {
-        return $this->belongsTo(Brand::class, 'brand_id', 'id');
+        // products.brandid = brands.id
+        return $this->belongsTo(Brand::class, 'brandid', 'id');
+    }
+
+    // Quan hệ với ProductImage (ảnh phụ)
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
 }

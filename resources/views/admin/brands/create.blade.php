@@ -42,9 +42,15 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label>Logo thương hiệu</label>
-            <input type="file" name="image" class="form-control" accept="image/*">
+        <div class="mb-3 img-group">
+            <label class="form-label">Hình ảnh</label>
+            <input type="file" name="img" class="form-control img-input">
+            <div class="img-preview mt-2"></div>
+            @error('img')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">Lưu</button>

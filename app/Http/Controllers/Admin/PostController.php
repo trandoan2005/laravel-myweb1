@@ -11,17 +11,14 @@ use App\Http\Requests\Admin\PostRequest;
 
 class PostController extends Controller
 {
-    public function index(Request $request)
+    public function index($limit = 10)
     {
-        $status = $request->query('status', '1');
-
         $list = Post::with(['user:id,fullname'])
             ->select('id', 'title', 'slug', 'status', 'user_id', 'image', 'created_at')
-            ->where('status', $status)
             ->orderBy('title')
-            ->paginate(10);
+            ->paginate($limit);
 
-        return view('admin.posts.index', compact('list', 'status'));
+        return view('admin.posts.index', compact('list'));
     }
 
     public function create()

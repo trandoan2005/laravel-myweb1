@@ -40,11 +40,20 @@
                        value="0" {{ old('status') == '0' ? 'checked' : '' }}>
                 <label class="form-check-label" for="status0">Ẩn</label>
             </div>
+            @error('status')
+                <span class="text-danger d-block mt-1">{{ $message }}</span>
+            @enderror
         </div>
 
-        <div class="mb-3">
-            <label>Ảnh danh mục</label>
-            <input type="file" name="image" class="form-control" accept="image/*">
+        <div class="mb-3 img-group">
+            <label class="form-label">Hình ảnh</label>
+            <input type="file" name="img" class="form-control img-input">
+            <div class="img-preview mt-2"></div>
+            @error('img')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">Lưu</button>
