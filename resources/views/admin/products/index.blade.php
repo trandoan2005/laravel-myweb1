@@ -7,19 +7,8 @@
 
     <x-admin.alert />
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="mb-3">
         <a href="{{ route('admin.products.create') }}" class="btn btn-success">+ Thêm mới</a>
-
-        <div class="btn-group">
-            <a href="{{ route('admin.products.index', ['status' => 1]) }}"
-               class="btn btn-outline-success {{ $status === '1' ? 'active' : '' }}">
-                Hiển thị
-            </a>
-            <a href="{{ route('admin.products.index', ['status' => 0]) }}"
-               class="btn btn-outline-danger {{ $status === '0' ? 'active' : '' }}">
-                Ẩn
-            </a>
-        </div>
     </div>
 
     <table class="table table-bordered table-hover">
@@ -70,6 +59,6 @@
 
     {{-- Phân trang --}}
     <div class="d-flex justify-content-center">
-        {{ $list->appends(['status' => $status])->links() }}
+        {{ $list->links() }}
     </div>
 @endsection

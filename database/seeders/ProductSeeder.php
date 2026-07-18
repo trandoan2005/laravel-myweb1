@@ -20,7 +20,7 @@ class ProductSeeder extends Seeder
             $brands = DB::table('brands')->pluck('id')->toArray();
         }
 
-        for ($i = 1; $i <= 15; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             $name = fake()->unique()->words(3, true);
             $price = fake()->randomFloat(2, 100000, 5000000);
             $priceSale = fake()->boolean(40) ? $price * 0.9 : null;

@@ -7,42 +7,49 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'My Web')</title>
 
-    {{-- CDN Bootstrap CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
     {{-- CDN Bootstrap Icons --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    
+    {{-- Summernote CSS --}}
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css" rel="stylesheet">
+    
+    {{-- Sử dụng CSS và JavaScript thông qua Vite --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row min-vh-100">
-        {{-- SIDEBAR --}}
-        <div class="col-md-2 bg-dark text-white p-0">
-            @include('admin._partials.sidebar')
-        </div>
+<div class="admin-wrapper d-flex">
+    {{-- SIDEBAR --}}
+    @include('admin._partials.sidebar')
 
-        {{-- RIGHT CONTENT --}}
-        <div class="col-md-10 d-flex flex-column p-0">
-            {{-- HEADER --}}
-            <div class="border-bottom bg-white">
-                @include('admin._partials.header')
-            </div>
+    {{-- RIGHT CONTENT --}}
+    <div class="admin-content flex-grow-1 d-flex flex-column" style="min-width: 0;">
+        {{-- HEADER --}}
+        @include('admin._partials.header')
 
-            {{-- MAIN CONTENT --}}
-            <main class="flex-grow-1 bg-light p-3">
-                @yield('content')
-            </main>
+        {{-- MAIN CONTENT --}}
+        <main class="flex-grow-1 p-4 bg-admin">
+            @yield('content')
+        </main>
 
-            {{-- FOOTER --}}
-            <footer class="bg-dark text-white text-center py-2">
-                @include('admin._partials.footer')
-            </footer>
-        </div>
+        {{-- FOOTER --}}
+        @include('admin._partials.footer')
     </div>
 </div>
 
-{{-- CDN Bootstrap JavaScript --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+{{-- Scripts --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
 <script src="{{ asset('js/preview-image.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        if ($('.summernote').length > 0) {
+            $('.summernote').summernote({
+                height: 300,
+                placeholder: 'Nhập nội dung chi tiết tại đây...',
+                tabsize: 2
+            });
+        }
+    });
+</script>
 </body>
 </html>

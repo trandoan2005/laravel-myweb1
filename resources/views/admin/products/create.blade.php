@@ -93,6 +93,11 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label fw-bold">Chi tiết sản phẩm</label>
+            <textarea name="detail" class="form-control summernote" rows="5" placeholder="Nhập chi tiết sản phẩm">{{ old('detail') }}</textarea>
+        </div>
+
+        <div class="mb-3">
             <label>Mô tả sản phẩm</label>
             <textarea name="description" class="form-control" rows="4">{{ old('description') }}</textarea>
         </div>

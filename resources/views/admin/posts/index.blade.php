@@ -7,19 +7,8 @@
 
     <x-admin.alert />
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="mb-3">
         <a href="{{ route('admin.posts.create') }}" class="btn btn-success">+ Thêm mới</a>
-
-        <div class="btn-group">
-            <a href="{{ route('admin.posts.index', ['status' => 1]) }}"
-               class="btn btn-outline-success {{ $status === '1' ? 'active' : '' }}">
-                Hiển thị
-            </a>
-            <a href="{{ route('admin.posts.index', ['status' => 0]) }}"
-               class="btn btn-outline-danger {{ $status === '0' ? 'active' : '' }}">
-                Ẩn
-            </a>
-        </div>
     </div>
 
     <table class="table table-bordered table-hover table-striped">
@@ -72,6 +61,6 @@
 
     {{-- THÊM PHÂN TRANG: Hiển thị thanh chuyển trang và giữ lại bộ lọc status hiện tại --}}
     <div class="d-flex justify-content-center mt-3">
-        {{ $list->appends(request()->query())->links() }}
+        {{ $list->links() }}
     </div>
 @endsection

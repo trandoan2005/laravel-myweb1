@@ -73,6 +73,7 @@ class ProductController extends Controller
                 'pricediscount' => $request->pricediscount ?? $request->price_sale ?? 0,
                 'price_sale' => $request->price_sale ?? $request->pricediscount ?? 0,
                 'description' => $request->description,
+                'detail' => $request->detail,
                 'status' => $request->status,
                 'image' => $fileName,
             ]);
@@ -149,6 +150,7 @@ class ProductController extends Controller
                 'image'       => $imageName,
                 'status'      => $request->status ?? $product->status,
                 'description' => $request->description ?? '',
+                'detail'      => $request->detail,
             ]);
 
             if ($request->hasFile('imgs')) {

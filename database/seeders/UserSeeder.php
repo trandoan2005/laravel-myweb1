@@ -9,7 +9,23 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        for ($i = 1; $i <= 10; $i++) {
+        // Tạo tài khoản admin cố định
+        DB::table('users')->insert([
+            'fullname' => 'Administrator',
+            'username' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('123456'),
+            'phone' => '0999999999',
+            'address' => 'Vietnam',
+            'gender' => 1,
+            'birthday' => '2000-01-01',
+            'role' => 1, // 1: Admin
+            'status' => 1, // Hoạt động
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        for ($i = 1; $i <= 19; $i++) {
             DB::table('users')->insert([
                 'fullname' => fake()->name(),
                 'username' => fake()->unique()->userName(),
